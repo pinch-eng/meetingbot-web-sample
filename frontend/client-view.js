@@ -11,12 +11,13 @@ var authEndpoint = "http://localhost:30015/api/zoom/msig";
 var zakEndpoint = "http://localhost:30015/api/zoom/hzak";
 var meetingDetailsEndpoint = "http://localhost:30015/api/zoom/mnum";
 
-var sdkKey = "Enter your SDK Key";
+var sdkKey = "veiZs5bwRdCuJ6UdI64D6Q";
 
-var url = 'Enter your Meeting Invite URL';
+var url = "https://us05web.zoom.us/j/7551476505?pwd=qWpzauk47XT6VfwMGaak45NDvuTI1s.1";
 
 
 var {meetingNumber, password} = getMeetingNumberAndPasswordFromUrl(url)
+console.log(meetingNumber, password)  
 
 // API Response data from the backend server.js ~ MAKE DYNAMIC
 var meetingNumber = meetingNumber;
@@ -24,14 +25,13 @@ var passWord = password;
 
 // -----------------------------------
 var role = 0; // 1 for host; 0 for attendee or webinar
-var userName = "{Enter Name}'s Bot";
+var userName = "AI Translator";
 
 var getlocalRecordingToken = "";
 
 var registrantToken = ''
 var zakToken = ''
-var leaveUrl = 'enter your Leave url'
-
+var leaveUrl = "https://zoom.us"
 
 
 function getSignature() {
@@ -266,13 +266,13 @@ function getMeetingNumberAndPasswordFromUrl(url) {
     };
   }
 
-  const meetingNumber = splitUrl.substring(splitUrl.lastIndexOf('/') + 1);
+    const meetingNumber = splitUrl.substring(splitUrl.lastIndexOf('/') + 1);
 
-  const queryString = url.split('?')[1];
+    const queryString = url.split('?')[1];
   const password = queryString ? queryString.split('pwd=')[1] : null;
 
-  return {
-    meetingNumber,
-    password
-  };
+    return {
+      meetingNumber,
+      password
+    };
 }

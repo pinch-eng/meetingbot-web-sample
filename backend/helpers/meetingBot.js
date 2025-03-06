@@ -12,7 +12,7 @@ async function clickJoinMeetingButton() {
   });
   const page = await browser.newPage();
 
-  await page.goto("Enter Local Development URL or Site", {
+  await page.goto("http://127.0.0.1:5500/frontend/", {
     waitUntil: "load",
 
     timeout: 0,

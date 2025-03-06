@@ -4,22 +4,20 @@ const btoa = require("btoa");
 
 const getZoomAPIAccessToken = async () => {
   try {
-    base_64 = btoa(process.env.CLIENT_ID + ":" + process.env.CLIENT_SECRET);
+    const base64Credentials = btoa(`${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`);
 
     const resp = await axios({
       method: "POST",
-      url:
-        "https://zoom.us/oauth/token?grant_type=account_credentials&account_id=" +
-        `${process.env.ACCOUNT_ID}`,
+      url: "https://zoom.us/oauth/token?grant_type=client_credentials",
       headers: {
-        Authorization: "Basic" + `${base_64} `,
+        Authorization: `Basic ${base64Credentials}`,
       },
     });
 
     return resp.data.access_token;
   } catch (err) {
-    // Handle Error Here
-    console.error(err);
+    console.error("获取Zoom access token失败:", err);
+    throw err;
   }
 };
 

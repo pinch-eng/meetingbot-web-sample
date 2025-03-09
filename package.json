@@ -1,9 +1,19 @@
 {
+  "name": "meetingbot-web-sample",
+  "version": "1.0.0",
+  "description": "Zoom Meeting Bot Web Sample with TypeScript and React",
   "scripts": {
-    "start": "nodemon backend/server.js",
-    "dev": "concurrently \"npm start\" \"npm run client\"",
+    "client": "cd client && npm start",
+    "server": "cd server && npm start",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "install-all": "npm install && cd client && npm install && cd ../server && npm install",
+    "build": "cd client && npm run build && cd ../server && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "workspaces": [
+    "client",
+    "server"
+  ],
   "dependencies": {
     "axios": "^1.7.9",
     "body-parser": "^1.20.2",
@@ -16,6 +26,8 @@
     "node-cron": "^3.0.2",
     "nodemon": "^3.1.7",
     "puppeteer": "^23.5.2",
-    "websocket": "^1.0.34"
+    "websocket": "^1.0.34",
+    "@zoomus/websdk": "^2.18.2",
+    "concurrently": "^8.2.2"
   }
 }

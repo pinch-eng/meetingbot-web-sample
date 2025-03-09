@@ -1,4 +1,4 @@
-ZoomMtg.setZoomJSLib('https://source.zoom.us/2.13.0/lib', '/av')
+ZoomMtg.setZoomJSLib('https://source.zoom.us/3.1.6/lib', '/av')
 
 ZoomMtg.preLoadWasm()
 ZoomMtg.prepareWebSDK()
@@ -13,15 +13,12 @@ var meetingDetailsEndpoint = "http://localhost:30015/api/zoom/mnum";
 
 var sdkKey = "veiZs5bwRdCuJ6UdI64D6Q";
 
-var url = "https://us05web.zoom.us/j/7551476505?pwd=qWpzauk47XT6VfwMGaak45NDvuTI1s.1";
+// 移除硬编码的 URL
+// var url = "https://us05web.zoom.us/j/87187828120?pwd=pLQJGSqqLRRCXXeuAlnh7ElzPiQa2D.1";
 
-
-var {meetingNumber, password} = getMeetingNumberAndPasswordFromUrl(url)
-console.log(meetingNumber, password)  
-
-// API Response data from the backend server.js ~ MAKE DYNAMIC
-var meetingNumber = meetingNumber;
-var passWord = password;
+// 初始化变量
+var meetingNumber = "";
+var passWord = "";
 
 // -----------------------------------
 var role = 0; // 1 for host; 0 for attendee or webinar
@@ -35,23 +32,48 @@ var leaveUrl = "https://zoom.us"
 
 
 function getSignature() {
-  fetch(authEndpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      meetingNumber: meetingNumber,
-      role: role
+  // 从输入框获取 URL
+  var url = document.getElementById('meeting_url').value;
+  
+  if (!url) {
+    alert('请输入 Zoom 会议链接');
+    return;
+  }
+  
+  try {
+    var { meetingNumber: mNum, password: pwd } = getMeetingNumberAndPasswordFromUrl(url);
+    meetingNumber = mNum;
+    passWord = pwd;
+    
+    console.log(meetingNumber, passWord);
+    
+    if (!meetingNumber || !passWord) {
+      alert('无效的 Zoom 会议链接，请检查后重试');
+      return;
+    }
+    
+    fetch(authEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        meetingNumber: meetingNumber,
+        role: role
+      })
+    }).then((response) => {
+      return response.json()
+    }).then((data) => {
+      console.log(data)
+      startMeeting(data.signature)
+    }).catch((error) => {
+      console.log(error)
+      alert('获取签名失败，请重试');
     })
-  }).then((response) => {
-    return response.json()
-  }).then((data) => {
-    console.log(data)
-    startMeeting(data.signature)
-  }).catch((error) => {
-  	console.log(error)
-  })
+  } catch (error) {
+    console.error('解析会议链接时出错:', error);
+    alert('无效的 Zoom 会议链接，请检查后重试');
+  }
 }
 
 
@@ -255,24 +277,48 @@ function handleJoinError(error) {
   console.log(error);
 }
 
-//function to get the meeting number and passwork from the url
+//改进函数以更好地处理各种格式的 Zoom URL
 function getMeetingNumberAndPasswordFromUrl(url) {
-  const splitUrl = url.split('?')[0];
-
-  if (!splitUrl) {
+  try {
+    // 处理 URL
+    if (!url) {
+      return {
+        meetingNumber: null,
+        password: null
+      };
+    }
+    
+    // 提取会议号
+    let meetingNumber = null;
+    const urlObj = new URL(url);
+    const pathParts = urlObj.pathname.split('/');
+    meetingNumber = pathParts[pathParts.length - 1];
+    
+    // 提取密码
+    let password = null;
+    const params = new URLSearchParams(urlObj.search);
+    if (params.has('pwd')) {
+      password = params.get('pwd');
+    }
+    
+    // 确保会议号是有效的数字
+    if (meetingNumber && /^\d+$/.test(meetingNumber)) {
+      return {
+        meetingNumber,
+        password
+      };
+    } else {
+      console.error('无效的会议号:', meetingNumber);
+      return {
+        meetingNumber: null,
+        password: null
+      };
+    }
+  } catch (error) {
+    console.error('解析 URL 时出错:', error);
     return {
       meetingNumber: null,
       password: null
     };
   }
-
-    const meetingNumber = splitUrl.substring(splitUrl.lastIndexOf('/') + 1);
-
-    const queryString = url.split('?')[1];
-  const password = queryString ? queryString.split('pwd=')[1] : null;
-
-    return {
-      meetingNumber,
-      password
-    };
 }

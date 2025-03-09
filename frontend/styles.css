@@ -12,8 +12,26 @@ main {
   text-align: center;
 }
 
+.input-container {
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+}
+
+#meeting_url {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
 main button {
-  margin-top: 20px;
+  margin-top: 10px;
   background-color: #2D8CFF;
   color: #ffffff;
   text-decoration: none;

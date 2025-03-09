@@ -1,99 +1,121 @@
+# Zoom 会议助手
 
-# Zoom Meeting Bot JavaScript sample
+这是一个使用 TypeScript、React 和 Express 构建的 Zoom 会议助手应用程序。它允许用户通过输入 Zoom 会议链接来加入会议，并提供自动化功能，如自动加入音频。
 
-Use of this sample app is subject to our [Terms of Use](https://explore.zoom.us/en/legal/zoom-api-license-and-tou/).
+## 功能
 
-This repo contains an HTML/CSS/JavaScript website that utilizes the [Zoom Meeting SDK](https://developers.zoom.us/docs/meeting-sdk/web/) with a Node.js Express backend and the Chrome Headless browser to join Zoom meetings and request recording permission as a participant. The frontend is built with Vanilla JS to demonstrate the capabilities of headless browsers for bot development. 
+- 通过 URL 加入 Zoom 会议
+- 自动加入音频
+- 使用 Puppeteer 进行浏览器自动化
+- 响应式设计
 
-Requirements:
-* Nodejs
+## 技术栈
 
-____
+### 前端
+- React
+- TypeScript
+- Zoom Web SDK
+- Axios
 
-## Installation
+### 后端
+- Node.js
+- Express
+- TypeScript
+- Puppeteer (浏览器自动化)
 
-To get started, clone the repo : https://github.com/zoom/meetingsdk-web-bot-sample.git
+## 项目结构
 
-## Setup
+```
+meetingbot-web-sample/
+├── client/                  # React 前端
+│   ├── public/
+│   │   ├── components/      # React 组件
+│   │   ├── hooks/           # 自定义 React Hooks
+│   │   ├── services/        # API 服务
+│   │   ├── types/           # TypeScript 类型定义
+│   │   ├── utils/           # 工具函数
+│   │   ├── App.tsx
+│   │   └── index.tsx
+│   ├── package.json
+│   └── tsconfig.json
+├── server/                  # Express 后端
+│   ├── src/
+│   │   ├── controllers/     # 控制器
+│   │   ├── routes/          # 路由
+│   │   ├── services/        # 服务
+│   │   ├── types/           # TypeScript 类型
+│   │   ├── utils/           # 工具函数
+│   │   ├── helpers/         # 助手函数 (包括 meetingBot)
+│   │   └── index.ts         # 入口文件
+│   ├── package.json
+│   └── tsconfig.json
+└── package.json             # 根项目配置
+```
 
-1. Once cloned, navigate to the meetingsdk-sample-javascript directory:
+## 安装
+
+1. 克隆仓库
 ```bash
-$ cd meetingsdk-web-bot-sample-javascript
+git clone https://github.com/yourusername/meetingbot-web-sample.git
+cd meetingbot-web-sample
 ```
 
-2. Then install the dependencies:
+2. 安装依赖
 ```bash
-$ npm install
+npm run install-all
 ```
-3. Copy .env.example to store your Meeting SDK credentials:
+
+3. 创建环境变量文件
+```bash
+cp .env.example .env
+```
+
+4. 编辑 `.env` 文件，添加你的 Zoom SDK 凭证
+
+## 开发
+
+1. 启动开发服务器
+```bash
+npm run dev
+```
+
+这将同时启动前端和后端服务器：
+- 前端: http://localhost:3000
+- 后端: http://localhost:30015
+
+## 构建
 
 ```bash
-$ cp .env.example .env
+npm run build
 ```
 
-4. In the frontend directory, open the client-view.js file, and enter values for the variables:
+## 部署
 
-
-   | Variable                   | Description |
-   | -----------------------|-------------|
-   | authEndpoint          | Required, your Meeting SDK auth endpoint that secuerly generates a Meeting SDK JWT. [Get a Meeting SDK auth endpoint here.](https://github.com/zoom/meetingsdk-sample-signature-node.js) |
-   | sdkKey                   | Required, your Zoom Meeting SDK Key or Client ID for Meeting SDK app type's created after February 11, 2023. [You can get yours here](https://developers.zoom.us/docs/meeting-sdk/developer-accounts/#get-meeting-sdk-credentials). |
-   | meetingNumber                   | Required, the Zoom Meeting or webinar number. |
-   | passWord                   | Optional, meeting password. Leave as empty string if the meeting does not require a password. |
-   | role                   | Required, `0` to specify participant, `1` to specify host. |
-   | userName                   | Required, a name for the user joining / starting the meeting / webinar. |
-   | userEmail                   | Required for Webinar, optional for Meeting, required for meeting and webinar if [registration is required](https://support.zoom.us/hc/en-us/articles/360054446052-Managing-meeting-and-webinar-registration). The email of the user starting or joining the meeting / webinar. |
-   | registrantToken            | Required if your [meeting](https://developers.zoom.us/docs/meeting-sdk/web/client-view/meetings/#join-meeting-with-registration-required) or [webinar](https://developers.zoom.us/docs/meeting-sdk/web/client-view/webinars/#join-webinar-with-registration-required) requires [registration](https://support.zoom.us/hc/en-us/articles/360054446052-Managing-meeting-and-webinar-registration). |
-   | zakToken            | Required to start meetings or webinars on external Zoom user's behalf, the [authorized Zoom user's ZAK token](https://developers.zoom.us/docs/meeting-sdk/auth/#start-meetings-and-webinars-with-a-zoom-users-zak-token). |
-   | leaveUrl                   | Required for Client View, the url the user is taken to once the meeting is over. |
-
-   Example:
-
-   ```js
-   var authEndpoint = 'http://localhost:4000'
-   var sdkKey = 'abc123'
-   var meetingNumber = '123456789'
-   var passWord = ''
-   var role = 0
-   var userName = 'Web Bot'
-   var userEmail = ''
-   var registrantToken = ''
-   var leaveUrl = 'https://zoom.us'
-
-   ```
-
-6. Launch a development local Server or open index.html in your browser ([or serve over localhost](https://www.npmjs.com/package/http-server)). 
-
-
-7. Start the server:
+1. 构建项目
 ```bash
-npm run start
+npm run build
 ```
 
-## Usage
-
-1. Enter Meeting SDK credentials values in index.html 
-
-2. Navigate to index.html in your browser ([or serve over localhost](https://www.npmjs.com/package/http-server)).
-
-3. In backend/helpers/meetingBot.js, enter local development url or site url. 
-```js
-await page.goto("{Enter local development url or site url}", {
-    waitUntil: "load",
-
-
-  });
+2. 启动生产服务器
+```bash
+NODE_ENV=production npm run server
 ```
-4. In terminal run : 
-  ```bash
-   npm run start
-  ```
 
-5. Meeting bot should enter the meeting as a participant and request recording permission.
+## Zoom SDK 设置
 
+1. 访问 [Zoom Developer Portal](https://marketplace.zoom.us/)
+2. 创建一个 SDK 应用
+3. 获取 SDK Key 和 Secret
+4. 在 `.env` 文件中设置这些凭证
 
-## Need help?
+## 注意事项
 
-If you're looking for help, try [Developer Support](https://devsupport.zoom.us)   or our [Developer Forum](https://devforum.zoom.us). Priority support is also available with [Premier Developer Support](https://zoom.us/docs/en-us/developer-support-plans.html) plans.
+- 确保你的 Zoom SDK 应用已正确配置
+- 浏览器自动化需要 Chrome/Chromium 浏览器
+- 在某些环境中，可能需要调整 Puppeteer 的配置
+
+## 许可证
+
+MIT
 
 
